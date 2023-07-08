@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #rangu {
+            background-color: red;
+            color: aliceblue;
+        }
+
+        #siva {
+            background-color: black;
+            color: aliceblue;
+        }
+
+        .pavan {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            grid-template-rows: repeat(5, 50px);
+            gap: 20px;
+            text-align: center;
+            margin: 0 auto; /* Added to center the calculator horizontally */
+            width: 320px; /* Added to specify the width of the calculator */
+            padding: 20px;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        }
+
+        button {
+            grid-area: 1/1/2/5;
+            text-align: center;
+        }
+
+        #result {
+            grid-column: 1 / -1; /* Span the entire row */
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.5rem;
+            padding: 10px;
+        }
+
+        #input-history {
+            grid-column: 1 / -1; /* Span the entire row */
+            text-align: right;
+            font-size: 0.8rem;
+            color: gray;
+            padding: 10px;
+        }
+
+        .pavan > div:not(#result):not(#input-history) {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: cyan; text-align: center;">Masai Calculator</h1>
+    <div class="pavan">
+        <div id="result"></div>
+        <div id="input-history"></div>
+        <button></button>
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div id="siva">+</div>
+        <div>4</div>
+        <div>5</div>
+        <div>6</div>
+        <div id="siva">-</div>
+        <div>7</div>
+        <div>8</div>
+        <div>9</div>
+        <div id="siva">x</div>
+        <div id="rangu">C</div>
+        <div>0</div>
+        <div id="siva">=</div>
+        <div id="siva">/</div>
+    </div>
+
+    <script>
+        const resultElement = document.getElementById('result');
+        const inputHistoryElement = document.getElementById('input-history');
+        const buttons = document.querySelectorAll('.pavan > div');
+
+        let result = '';
+        let num1 = '';
+        let operator = '';
+        let inputHistory = '';
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const buttonText = button.textContent;
+
+                if (buttonText === 'C') {
+                    // Clear the result and input values
+                    result = '';
+                    num1 = '';
+                    operator = '';
+                    inputHistory = '';
+                } else if (buttonText === '=') {
+                    // Perform the calculation
+                    const num2 = result;
+                    if (num1 && num2 && operator) {
+                        result = calculateResult(parseFloat(num1), parseFloat(num2), operator);
+                        inputHistory = `${num1} ${operator} ${num2}`;
+                    }
+                    num1 = '';
+                    operator = '';
+                } else if (['+', '-', 'x', '/'].includes(buttonText)) {
+                    // Set the operator
+                    operator = buttonText;
+                    num1 = result;
+                    result = '';
+                    inputHistory = `${num1} ${operator}`;
+                } else {
+                    // Append the clicked number to the result
+                    result += buttonText;
+                    inputHistory += buttonText;
+                }
+
+                resultElement.textContent = result;
+                inputHistoryElement.textContent = inputHistory;
+            });
+        });
+
+        function calculateResult(num1, num2, operator) {
+            let result = 0;
+            switch (operator) {
+                case '+':
+                    result = num1 + num2;
+                    break;
+                case '-':
+                    result = num1 - num2;
+                    break;
+                case 'x':
+                    result = num1 * num2;
+                    break;
+                case '/':
+                    result = num1 / num2;
+                    break;
+            }
+            return result;
+        }
+    </script>
+</body>
+</html>
